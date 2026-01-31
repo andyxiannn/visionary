@@ -1,0 +1,10 @@
+{
+  "name": "testollama-root",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Root meta package for split frontend/backend",
+  "scripts": {
+    "start:backend": "npm --prefix backend start",
+    "dev:frontend": "npm --prefix frontend run dev"
+  }
+}
