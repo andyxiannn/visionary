@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+const DEFAULT_API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 export default function App() {
   const [file, setFile] = useState(null)
@@ -10,6 +10,17 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [response, setResponse] = useState('')
+  const [apiUrl, setApiUrl] = useState(DEFAULT_API)
+
+  useEffect(() => {
+    try {
+      const params = new URL(window.location.href).searchParams
+      const fromQuery = params.get('api')
+      // Precedence: query > env/default > hardcoded fallback (no localStorage)
+      const chosen = fromQuery || DEFAULT_API || 'http://localhost:8000'
+      setApiUrl(chosen)
+    } catch {}
+  }, [])
 
   const onFileChange = (e) => {
     const f = e.target.files?.[0]
@@ -32,7 +43,7 @@ export default function App() {
       fd.append('prompt', prompt)
       fd.append('model', model)
 
-      const res = await fetch(`${API_URL}/vision`, {
+      const res = await fetch(`${apiUrl}/vision`, {
         method: 'POST',
         body: fd
       })
@@ -84,7 +95,7 @@ export default function App() {
       )}
 
       <div style={{ marginTop: '2rem', color: '#555' }}>
-        Backend: {API_URL}/vision
+        Backend: {apiUrl}/vision
       </div>
     </div>
   )

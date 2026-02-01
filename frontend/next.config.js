@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true
+  reactStrictMode: true,
+  env: {
+    // Ensure client-side has a default when .env isn't loaded
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+  }
 }
 
 module.exports = nextConfig

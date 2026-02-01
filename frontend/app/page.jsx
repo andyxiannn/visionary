@@ -1,7 +1,14 @@
+
 'use client'
 import { useState } from 'react'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+// Read from Next.js env (inlined at build time)
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+
+// Debug: log what URL is being used
+if (typeof window !== 'undefined') {
+  console.log('[Frontend] Using API URL:', API_URL)
+}
 
 export default function Page() {
   const [file, setFile] = useState(null)
@@ -33,6 +40,7 @@ export default function Page() {
       fd.append('prompt', prompt)
       fd.append('model', model)
 
+      console.log('[Frontend] Fetching from:', `${API_URL}/vision`)
       const res = await fetch(`${API_URL}/vision`, { method: 'POST', body: fd })
       if (!res.ok) throw new Error(`Server responded ${res.status}`)
       const data = await res.json()
