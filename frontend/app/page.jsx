@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
 export default function Page() {
   const [file, setFile] = useState(null)
@@ -45,45 +45,67 @@ export default function Page() {
   }
 
   return (
-    <div>
-      <h1>Ollama Vision (Next.js + NestJS)</h1>
-      <form onSubmit={onSubmit} style={{ display: 'grid', gap: '1rem', maxWidth: 640 }}>
-        <label>
-          Image file:
-          <input type="file" accept="image/*" onChange={onFileChange} />
-        </label>
-        <label>
-          Prompt:
-          <input type="text" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
-        </label>
-        <label>
-          Model:
-          <input type="text" value={model} onChange={(e) => setModel(e.target.value)} />
-        </label>
-        <button type="submit" disabled={loading}>{loading ? 'Analyzing…' : 'Analyze'}</button>
-      </form>
+    <main className="container">
+      <header className="header">
+        <h1 className="title">Ollama Vision</h1>
+        <p className="subtitle">Upload images and get descriptions with <strong>qwen3-vl</strong>.</p>
+      </header>
 
-      {preview && (
-        <div style={{ marginTop: '1rem' }}>
-          <h3>Preview</h3>
-          <img src={preview} alt="preview" style={{ maxWidth: '100%', border: '1px solid #ddd' }} />
+      <section className="grid two-col">
+        <div className="card">
+          <div className="card-inner">
+            <div className="section-title">Input</div>
+            <form className="form" onSubmit={onSubmit}>
+              <div>
+                <div className="label">Image file</div>
+                <input className="file-input" type="file" accept="image/*" onChange={onFileChange} />
+              </div>
+              <div className="row">
+                <div>
+                  <div className="label">Prompt</div>
+                  <input className="input" type="text" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
+                </div>
+                <div>
+                  <div className="label">Model</div>
+                  <input className="input" type="text" value={model} onChange={(e) => setModel(e.target.value)} />
+                </div>
+              </div>
+              <div className="actions">
+                <button className="button" type="submit" disabled={loading}>
+                  {loading ? (<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><span className="spinner" /> Analyzing…</span>) : 'Analyze'}
+                </button>
+                {error && <span style={{ color: '#ff6666', fontSize: 13 }}>Error: {error}</span>}
+              </div>
+            </form>
+          </div>
         </div>
-      )}
 
-      {error && (
-        <div style={{ color: 'red', marginTop: '1rem' }}>Error: {error}</div>
-      )}
-
-      {response && (
-        <div style={{ marginTop: '1rem' }}>
-          <h3>Response</h3>
-          <pre style={{ background: '#f5f5f5', padding: '1rem', whiteSpace: 'pre-wrap' }}>{response}</pre>
+        <div className="card">
+          <div className="card-inner">
+            <div className="section-title">Preview</div>
+            {preview ? (
+              <img className="preview" src={preview} alt="preview" />
+            ) : (
+              <div className="terminal" style={{ color: 'var(--muted)' }}>No image selected.</div>
+            )}
+          </div>
         </div>
-      )}
+      </section>
 
-      <div style={{ marginTop: '2rem', color: '#555' }}>
-        Backend: {API_URL}/vision
-      </div>
-    </div>
+      <section className="grid" style={{ marginTop: 20 }}>
+        <div className="card">
+          <div className="card-inner">
+            <div className="section-title">Response</div>
+            {response ? (
+              <pre className="terminal">{response}</pre>
+            ) : (
+              <div className="terminal" style={{ color: 'var(--muted)' }}>Results will appear here.</div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <div className="footer">Backend: {API_URL}/vision</div>
+    </main>
   )
 }

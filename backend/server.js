@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
@@ -65,7 +66,8 @@ app.post('/vision', upload.single('image'), async (req, res) => {
     const base64 = Buffer.from(bytes).toString('base64');
 
     const fetchFn = await getFetchFn();
-    const response = await fetchFn('http://localhost:11434/api/generate', {
+    const baseUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
+    const response = await fetchFn(`${baseUrl}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

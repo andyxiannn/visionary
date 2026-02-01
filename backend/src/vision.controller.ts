@@ -25,7 +25,8 @@ export class VisionController {
     const base64 = file.buffer.toString('base64');
 
     try {
-      const response = await axios.post('http://localhost:11434/api/generate', {
+      const baseUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
+      const response = await axios.post(`${baseUrl}/api/generate`, {
         model,
         prompt,
         images: [base64],
